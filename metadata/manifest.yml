@@ -17,8 +17,8 @@ Scaling:
   Min: 1
   Max: -1
 Publishes:
-  publish-postgres-connection-info:
-    Type: "NET_TCP:db:postgres"
+  publish-db-connection-info:
+    Type: ENV:NET_TCP:db:connection-info
 Endpoints:
   - Private-IP-Name:   HOST
     Private-Port-Name: PORT
