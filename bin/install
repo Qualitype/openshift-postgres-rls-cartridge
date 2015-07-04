@@ -13,5 +13,37 @@ client_result "completed running initdb ....`date`"
 
 client_result "configuring standalone postgres server this time"
 erb  $OPENSHIFT_PGRLS_DIR/conf/pg_hba.conf.erb > $OPENSHIFT_PGRLS_DIR/data/pg_hba.conf
-erb  $OPENSHIFT_PGRLS_DIR/conf/postgresql.conf.erb > $OPENSHIFT_PGRLS_DIR/data/postgresql.conf
+erb  $OPENSHIFT_PGRLS_DIR/conf/postgresql.conf.erb > $OPENSHIFT_PGRLS_DIR/data/postgresql.
 
+env_dir="${OPENSHIFT_POSTGRESQL_DIR}/env"
+
+echo 'Generating username and password'
+
+username=$(generate_username)
+# Force the username to be all lowercase so it works properly with psql
+username=$(echo "${username}" | tr '[:upper:]' '[:lower:]')
+password=$(generate_password)
+
+set_env_var 'OPENSHIFT_POSTGRESQL_DB_USERNAME' $username $env_dir
+set_env_var 'PGUSER' $username $env_dir
+set_env_var 'OPENSHIFT_POSTGRESQL_DB_PASSWORD' $password $env_dir
+
+# TODO: This should be able to be in an erb file, but they're not sourced in the correct order
+set_env_var 'OPENSHIFT_POSTGRESQL_DB_URL' "postgresql://${username}:${password}@${OPENSHIFT_POSTGRESQL_DB_HOST}:${OPENSHIFT_POSTGRESQL_DB_PORT}" $env_dir
+
+conn_url='postgresql://$OPENSHIFT_POSTGRESQL_DB_HOST:$OPENSHIFT_POSTGRESQL_DB_PORT'
+
+client_result ""
+client_result "PostgreSQL ${version} database added.  Please make note of these credentials:"
+client_result ""
+client_result "   Root User: ${username}"
+client_result "   Root Password: ${password}"
+client_result "   Database Name: ${OPENSHIFT_APP_NAME}"
+client_result ""
+client_result "Connection URL: ${conn_url}"
+client_result ""
+
+cart_props "connection_url=${conn_url}"
+cart_props "username=${username}"
+cart_props "password=${password}"
+cart_props "database_name=${OPENSHIFT_APP_NAME}"
