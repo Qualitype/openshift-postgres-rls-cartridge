@@ -15,7 +15,7 @@ client_result "configuring standalone postgres server this time"
 erb  $OPENSHIFT_PGRLS_DIR/conf/pg_hba.conf.erb > $OPENSHIFT_PGRLS_DIR/data/pg_hba.conf
 erb  $OPENSHIFT_PGRLS_DIR/conf/postgresql.conf.erb > $OPENSHIFT_PGRLS_DIR/data/postgresql.
 
-env_dir="${OPENSHIFT_POSTGRESQL_DIR}/env"
+env_dir="${OPENSHIFT_PGRLS_DIR}/env"
 
 echo 'Generating username and password'
 
