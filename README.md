@@ -8,11 +8,11 @@ This version of PostgreSQL includes a fix applied to the pgstat.c source file th
 
 
 The PostgreSQL port is 5432.  The database user is $USER, and the database
-name is template1, all are default values.
+name is $OPENSHIFT_APP_NAME, all are default values.
 
 The PostgreSQL data directory is found at ~/app-root/data/.pg
 
 Test the installation with this command:
 
-psql -U $USER -h $OPENSHIFT_PG_HOST template1
+psql -U $USER -h $OPENSHIFT_PG_HOST $OPENSHIFT_APP_NAME
 
